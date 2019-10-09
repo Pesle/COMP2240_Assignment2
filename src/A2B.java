@@ -14,6 +14,8 @@ public class A2B {
 		    	
 		    	//Begin the scheduling algorithms
 				parlour.begin();
+				
+				parlour.results();
 		    }else {
 		    	System.out.println("Error Occured While Importing!");
 		    }
