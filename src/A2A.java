@@ -22,7 +22,7 @@ public class A2A {
 			
 			//Make sure N and S are positive or 0
 			if(north >= 0 && south >= 0) {
-				System.out.println("Problem A - North: " + north + " / South: " + south + "\n");
+				System.out.println("Assignment 2, Problem A - North: " + north + " / South: " + south + "\n");
 
 				//Start farmers crossing bridge
 				begin(north, south);

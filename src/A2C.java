@@ -1,9 +1,9 @@
 import java.io.*;
 import java.util.Scanner;
 
-public class A2B {
+public class A2C {
 	
-	static A2BParlour parlour = new A2BParlour();
+	static A2CMachine machine = new A2CMachine();
 	
 	public static void main(String[] args) {
 		
@@ -12,16 +12,16 @@ public class A2B {
 			String name = args[0];
 			
 			//Show the location of the file
-			System.out.println("Assignment 2, Problem B - File: "+ System.getProperty("user.dir") + "\\" + name + "\n");
+			System.out.println("Assignment 2, Problem C - File: "+ System.getProperty("user.dir") + "\\" + name + "\n");
 
-			//Import the contents of the file to the parlour
-			if(importFile(name, parlour)) {
+			//Import the contents of the file to the machine
+			if(importFile(name, machine)) {
 		    	
 		    	//Begin serving customers
-				parlour.begin();
+				machine.begin();
 				
 				//Display results
-				parlour.results();
+				machine.results();
 				
 		    }else {
 		    	System.out.println("Error Occured While Importing!");
@@ -32,7 +32,7 @@ public class A2B {
 	}
 	
 
-	public static boolean importFile(String name, A2BParlour parlour) {
+	public static boolean importFile(String name, A2CMachine machine) {
 		boolean result = true;
 		try{
 			 
@@ -54,16 +54,11 @@ public class A2B {
 		    String[] lines = contents.split("\\r?\\n");
 		            
 	    	//Loop through lines
-		    for(int i = 0; i < lines.length; i++) {
-		    	
-		    	//Search for END
-		        if(lines[i].equals("END")) {
-		        	break;
-		        }else {
-		        	//Split lines by space
-			        String[] data = lines[i].split(" ");
-			        parlour.addCustomer(Integer.parseInt(data[0]), data[1], Integer.parseInt(data[2]));
-		        }
+		    for(int i = 1; i <= Integer.parseInt(lines[0]); i++) {
+		 
+	        	//Split lines by space
+		        String[] data = lines[i].split(" ");
+		        machine.addClient(data[0], Integer.parseInt(data[1]));
 		    }
 		}
 		catch(IOException e){
