@@ -6,16 +6,23 @@ public class A2B {
 	static A2BParlour parlour = new A2BParlour();
 	
 	public static void main(String[] args) {
+		
+		//Make sure the file is specified
 		if (args.length == 1){
 			String name = args[0];
+			
+			//Show the location of the file
 			System.out.println("Problem B - File: "+ System.getProperty("user.dir") + "\\" + name + "\n");
 
+			//Import the contents of the file to the parlour
 			if(importFile(name, parlour)) {
 		    	
-		    	//Begin the scheduling algorithms
+		    	//Begin serving customers
 				parlour.begin();
 				
+				//Display results
 				parlour.results();
+				
 		    }else {
 		    	System.out.println("Error Occured While Importing!");
 		    }

@@ -2,10 +2,10 @@ import java.util.concurrent.Semaphore;
 
 public class A2AFarmer implements Runnable {
 	
-	private static final Semaphore semaphore = new Semaphore(1,true);
+	private static final Semaphore SEMAPHORE = new Semaphore(1,true);
 	private static int count = 0;
-	private static final int stepSize = 5;
-	private static final int distance = 15;
+	private static final int STEP_SIZE = 5;
+	private static final int DISTANCE = 15;
 	
 	private String direction;
 	private String ID;
@@ -25,7 +25,7 @@ public class A2AFarmer implements Runnable {
 			//Try to cross Bridge
 			crossBridge();
 			
-			//Swap Directions
+			//Once crossed, swap Directions
 			if(direction.equals("North")) {
 				direction = "South";
 			}else {
@@ -35,18 +35,22 @@ public class A2AFarmer implements Runnable {
 	}
 	
 	private void crossBridge() {
+		//Try to cross the bridge
 		try {
-			semaphore.acquire();
-			currentStep = stepSize;
-			while(currentStep < distance) {
+			SEMAPHORE.acquire();
+			//Set current step to the stepSize
+			currentStep = STEP_SIZE;
+			
+			//Loop until the farmer has crossed the bridge
+			while(currentStep < DISTANCE) {
 				System.out.println(ID + ": Crossing bridge Step " + currentStep +".");
-				currentStep += stepSize;
+				currentStep += STEP_SIZE;
 			}		
 			System.out.println(ID + ": Across the bridge.");
 
 			count++;
 			System.out.println("NEON = " + count);
-			semaphore.release();
+			SEMAPHORE.release();
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
