@@ -8,8 +8,8 @@ public class A2BParlour {
 	
 	private final Semaphore seats = new Semaphore(MAX_SEATS, true);
 	
-	private LinkedList<Thread> customers;				//List of customers as threads
-	private LinkedList<A2BCustomer> arrivedCustomers;	//List of customers
+	private LinkedList<Thread> customerThreads;				//List of customers as threads
+	private LinkedList<A2BCustomer> customers;	//List of customers
 	
 	private boolean ready;			//If the parlour is ready for more customers
 	private int previousSeated;		//Number of customers seated before ready
@@ -19,14 +19,14 @@ public class A2BParlour {
 	public A2BParlour() {
 		ready = true;
 		previousSeated = 0;
-		customers = new LinkedList<Thread>();
-		arrivedCustomers = new LinkedList<A2BCustomer>();
+		customerThreads = new LinkedList<Thread>();
+		customers = new LinkedList<A2BCustomer>();
 	}
 	
 //Begin the code
 	public void begin() {
 		//Start all customer threads
-        for (Thread curThread: customers) {
+        for (Thread curThread: customerThreads) {
 	    	curThread.start();
 	    }
         
@@ -45,14 +45,14 @@ public class A2BParlour {
 	//Add customers to the queue
 	public void addCustomer(int arriveTime, String ID, int eatingTime) {
 		A2BCustomer newCustomer = new A2BCustomer(arriveTime, ID, eatingTime, this);
-		customers.add(new Thread(newCustomer));
-		arrivedCustomers.add(newCustomer);
+		customerThreads.add(new Thread(newCustomer));
+		customers.add(newCustomer);
 	}
 	
 	//Checks if all customers have finished
 	private boolean allCustomersFinished() {
 		//Loop through customers
-		for (A2BCustomer curCustomer: arrivedCustomers) {
+		for (A2BCustomer curCustomer: customers) {
 			
 			//If a customer hasnt finished, then return false
 			if(!curCustomer.isFinished()) {
@@ -67,7 +67,7 @@ public class A2BParlour {
 		int result = 0;
 		
 		//Loop through the customers
-		for (A2BCustomer curCustomer: arrivedCustomers) {
+		for (A2BCustomer curCustomer: customers) {
 			
 			//Add seated customers to the end result
 			if(curCustomer.isSeated()) {
@@ -103,7 +103,7 @@ public class A2BParlour {
 
 	public void results() {
 		System.out.format("%-10s%-10s%-10s%-10s\n", "Customer", "Arrives", "Seats", "Leaves");
-		for (A2BCustomer curCustomer: arrivedCustomers) {
+		for (A2BCustomer curCustomer: customers) {
 			System.out.format("%-10s%-10s%-10s%-10s\n", curCustomer.getID(), curCustomer.getArriveTime(), curCustomer.getSeatedTime(), curCustomer.getLeaveTime());
 		}
 	}
