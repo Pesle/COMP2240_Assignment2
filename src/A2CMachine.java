@@ -65,7 +65,7 @@ public class A2CMachine {
         while(true) {
         	
         	//Delay depending on the number of clients waiting, helps with fairness
-        	try { Thread.sleep(countWaiting()+2); }
+        	try { Thread.sleep(countWaiting()+5); }
         	catch (InterruptedException e) { e.printStackTrace(); }
         	
  		  	//Loop through the clients
@@ -86,7 +86,7 @@ public class A2CMachine {
     		}
 
     		//Delay added to help fairness and stability
-        	try { Thread.sleep(countWaiting()+2); }
+        	try { Thread.sleep(countWaiting()+5); }
         	catch (InterruptedException e) { e.printStackTrace(); }
         	
         	//Break loop when there are no more clients waiting

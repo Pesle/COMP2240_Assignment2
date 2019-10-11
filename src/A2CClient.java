@@ -165,6 +165,8 @@ public class A2CClient implements Runnable{
 		brewing = false;	//Finished brewing
 		finished = true;	//Finished
 		machine.finishDispenser(this);		//Deallocate dispenser
+		try { Thread.sleep(1); }
+    	catch (InterruptedException e) { e.printStackTrace(); }
 		brewLock.unlock();
 		
 		//If there is clients waiting and nobody is brewing, change the temperature and call the next client stuck at modeLock
