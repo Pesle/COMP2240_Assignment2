@@ -1,3 +1,14 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2BParlour.java
+ *  Parlour has seats and customers
+ *  Manages the seats and what customers can sit at what times
+ */
+
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 

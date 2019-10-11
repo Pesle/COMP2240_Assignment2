@@ -1,31 +1,43 @@
-import java.util.Iterator;
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2CMachine.java
+ *  The machine has dispensers and clients
+ *  It manages what clients go to what dispensers and at what times
+ */
+
 import java.util.LinkedList;
 import java.util.concurrent.locks.*;
 
 public class A2CMachine {
 
-	public static final int DISPENSERS = 2;
+	public static final int DISPENSERS = 2;		//Number of dispensers the machine has
 	
-	private String currentMode;
-	private int currentTime;
+	private String currentMode;		//Current temperature that the machine is
+	private int currentTime;		//Current Time
 	
-	private LinkedList <Thread> clientThreads;
-	private LinkedList <A2CClient> clients;
-	private int currentPosition;
+	private LinkedList <Thread> clientThreads;		//Stores clients as threads
+	private LinkedList <A2CClient> clients;			//Stores clients
+	private int currentPosition;					//Current Client in the list
 	
-	private A2CClient[] dispensers;
+	private A2CClient[] dispensers;			//Array of dispensers that holds clients
 	
-	public Lock modeLock = new ReentrantLock(true);
+	//Mode Lock
+	public Lock modeLock = new ReentrantLock(true);	
 	public Condition modeLockCondition = modeLock.newCondition();
 	
-	public Lock generalLock = new ReentrantLock(true);
-	public Condition generalLockCondition = generalLock.newCondition();
 	
+//Constructor
 	A2CMachine(){
+		//Initialize dispensers and fill them
 		dispensers = new A2CClient[DISPENSERS];
 		for (int i = 0; i < DISPENSERS; i++) {
 			dispensers[i] = null;
 		}
+		
 		clientThreads = new LinkedList<Thread>();
 		clients = new LinkedList<A2CClient>();
 		currentPosition = 0;
@@ -40,9 +52,11 @@ public class A2CMachine {
 	    	curThread.start();
 	    }
         
-        try { Thread.sleep(100); }
+        //Sleep at the start to allow threads to all start and run
+        try { Thread.sleep(20); }
     	catch (InterruptedException e) { e.printStackTrace(); }
         
+        //Start the first client
         getCurrentClient().initialWaitLock.lock();
         getCurrentClient().initialWaitLockCondition.signal();
         getCurrentClient().initialWaitLock.unlock();
@@ -50,12 +64,14 @@ public class A2CMachine {
         //Loop while ever there is a client that has not finished
         while(true) {
         	
-        	try { Thread.sleep(countWaiting()*2); }
+        	//Delay depending on the number of clients waiting, helps with fairness
+        	try { Thread.sleep(countWaiting()+2); }
         	catch (InterruptedException e) { e.printStackTrace(); }
         	
  		  	//Loop through the clients
     		for (A2CClient curClient: clients) {
     			
+    			//Process clients that are currently brewing
     			synchronized(clients) {
 	    			if(curClient.isBrewing()) {
 	    				curClient.brewLock.lock();
@@ -69,12 +85,11 @@ public class A2CMachine {
     			}
     		}
 
-        	System.out.println("Time: "+ currentTime + " 	Waiting: " + countWaiting() + " 	Queued: " + countQueued() + "	Brewing: " + countBrewing() + "	Finished: " + countFinished());
-        	
-        	try { Thread.sleep(countWaiting()*2+2); }
+    		//Delay added to help fairness and stability
+        	try { Thread.sleep(countWaiting()+2); }
         	catch (InterruptedException e) { e.printStackTrace(); }
-        	//Add to the current time
         	
+        	//Break loop when there are no more clients waiting
         	if(countFinished() == clients.size()) {
         		break;
         	}
@@ -83,7 +98,7 @@ public class A2CMachine {
         }
 	}
 
-
+	//Add clients to lists
 	public void addClient(String ID, int brewTime) {
 		String temp = ID.substring(0,1);
 		A2CClient newClient = new A2CClient(ID, temp, brewTime, this);
@@ -91,16 +106,19 @@ public class A2CMachine {
 		clients.add(newClient);
 	}
 	
+	//Iterate to the next client
 	public synchronized void iterateClient() {
 		if(currentPosition < clients.size()-1) {
 			currentPosition++;
 		}
 	}
 	
+	//Return the current selected client
 	public A2CClient getCurrentClient() {
 		return clients.get(currentPosition);
 	}
 	
+	//Count the number of finished clients
 	public int countFinished() {
 		int result = 0;
 		
@@ -115,9 +133,9 @@ public class A2CMachine {
 		return result;
 	}
 	
+	//Count the number of clients that are brewing
 	public int countBrewing() {
 		int result = 0;
-		
 		for (int i = 0; i < DISPENSERS; i++) {
 			if(dispensers[i] != null) {
 				result++;
@@ -126,6 +144,7 @@ public class A2CMachine {
 		return result;
 	}
 	
+	//Count the number of clients queued for brewing
 	public int countQueued() {
 		int result = 0;
 		
@@ -140,7 +159,8 @@ public class A2CMachine {
 		return result;
 	}
 	
-	public void signalNextInQueue() {
+	//Send a signal to the next client in queue that the dispenser is ready
+	public synchronized void signalNextInQueue() {
 		//Loop through the clients
 		for (A2CClient curClient: clients) {
 			
@@ -154,25 +174,17 @@ public class A2CMachine {
 		}
 	}
 	
+	//Check if the machine is ready for another client
 	public boolean isReady(A2CClient client) {
+		
+		//Check if there are any dispensers free
 		if(countBrewing() >= DISPENSERS) {
-			System.out.println("Not Ready! Dispensers occupied");
 			return false;
 		}
-		
-		if(client.getTemperature().equals(currentMode)) {
-			return true;
-		}else {
-			if(countBrewing() == 0) {
-				currentMode = client.getTemperature();
-				return true;
-			}else {
-				System.out.println("Not Ready! Wrong Temp " + client.getTemperature() + " vs " + currentMode);
-				return false;
-			}
-		}
+		return true;
 	}
 	
+	//Find a dispenser for the client to use, returns dispenser number
 	public int occupyDispenser(A2CClient client) {
 		int result = 0;
 		for (int i = 0; i < DISPENSERS; i++) {
@@ -185,6 +197,7 @@ public class A2CMachine {
 		return result;
 	}
 	
+	//Removes client from the dispenser
 	public void finishDispenser(A2CClient client) {
 		for (int i = 0; i < DISPENSERS; i++) {
 			if(dispensers[i] == client) {
@@ -193,22 +206,27 @@ public class A2CMachine {
 		}
 	}
 	
+	//Count the number of clients waiting
 	public int countWaiting() {
 		return clients.size() - (countFinished() + countBrewing());
 	}
 	
+	//Get current temperature
 	public String getMode() {
 		return currentMode;
 	}
 	
+	//Set current temperature
 	public void setMode(String mode) {
 		this.currentMode = mode;
 	}
 	
+	//Get current time
 	public int getCurrentTime() {
 		return currentTime;
 	}
 
+	//Return results from the clients
 	public void results() {
 		for (A2CClient curClient: clients) {
 			System.out.println("("+curClient.getStartTime()+") "+curClient.getID()+" uses dispenser "+curClient.getDispenser()+" (time: "+curClient.getBrewTime()+")");

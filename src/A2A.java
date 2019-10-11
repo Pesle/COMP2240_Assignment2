@@ -1,3 +1,14 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2A.java
+ *  The main file for Problem A
+ *  This imports the farmers, starts them and shows the results
+ */
+
 public class A2A {
 
 	public static void main(String[] args) {

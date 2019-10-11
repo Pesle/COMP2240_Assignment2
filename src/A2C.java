@@ -1,3 +1,14 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2C.java
+ *  Main file for Problem C
+ *  Imports file and runs the Coffee Machine
+ */
+
 import java.io.*;
 import java.util.Scanner;
 
@@ -17,7 +28,7 @@ public class A2C {
 			//Import the contents of the file to the machine
 			if(importFile(name, machine)) {
 		    	
-		    	//Begin serving customers
+		    	//Begin serving clients
 				machine.begin();
 				
 				//Display results

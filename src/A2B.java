@@ -1,3 +1,14 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2B.java
+ *  Main file for Problem B
+ *  Imports file and runs the Parlour
+ */
+
 import java.io.*;
 import java.util.Scanner;
 

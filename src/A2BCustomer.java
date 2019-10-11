@@ -1,3 +1,13 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2BCustomer.java
+ *  The Customer looks for a seat to sit in
+ *  Also records data about itself
+ */
 
 public class A2BCustomer implements Runnable{
 

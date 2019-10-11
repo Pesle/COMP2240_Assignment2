@@ -1,3 +1,13 @@
+/*
+ *  ----C3282137----
+ *  Ryan Jobse
+ *  COMP2240 S2 2019
+ *  Assignment 2
+ *  
+ *  A2AFarmer.java
+ *  The farmer keeps trying to cross the bridge, but can only cross when available
+ */
+
 import java.util.concurrent.Semaphore;
 
 public class A2AFarmer implements Runnable {
